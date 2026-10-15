@@ -1,0 +1,27 @@
+
+# Dependencies
+node_modules/
+backend/node_modules/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Session cookies and local credentials
+**/*cookies*.txt
+**/*cookie*.txt
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor and operating system files
+.vscode/
+.DS_Store
+Thumbs.db
+# Local session and cookie files
+*cookies*.txt

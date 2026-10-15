@@ -1,0 +1,347 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StockFlow | Warehouse Management</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <a href="#" class="brand">
+        <span class="brand-icon">S</span>
+        <span>StockFlow</span>
+      </a>
+
+      <p class="menu-label">WORKSPACE</p>
+
+      <nav class="navigation">
+        <button class="nav-link active" data-page="dashboard">
+          <span>▦</span> Dashboard
+        </button>
+        <button class="nav-link" data-page="inventory">
+          <span>▤</span> Inventory
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="warehouse-badge">
+          <span class="status-dot"></span>
+          <div>
+            <strong>Main Warehouse</strong>
+            <small>Warehouse active</small>
+          </div>
+        </div>
+        <p class="sidebar-footer">STOCKFLOW · DEMO</p>
+      </div>
+    </aside>
+
+    <!-- Main application -->
+    <main class="main-area">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">WAREHOUSE OPERATIONS</p>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+        <div class="topbar-right">
+          <span class="live-indicator">● Demo mode</span>
+          <div class="avatar">AD</div>
+          <button
+    id="logoutButton"
+    class="button button-secondary"
+    type="button"
+  >
+    Logout
+  </button>
+        </div>
+      </header>
+
+      <div class="page-content">
+
+        <!-- Dashboard page -->
+        <section class="page-section" id="dashboardPage">
+          <div class="welcome-row">
+            <div>
+              <h2>Warehouse overview</h2>
+              <p class="muted">Here's what's happening with your inventory.</p>
+            </div>
+            <button class="button button-primary" id="dashboardAddButton">
+              + Add product
+            </button>
+          </div>
+
+          <div class="stats-grid">
+            <article class="stat-card">
+              <div class="stat-heading">
+                <span>Total products</span>
+                <span class="stat-icon purple">▤</span>
+              </div>
+              <strong class="stat-value" id="totalProducts">0</strong>
+              <p class="stat-note">Unique product records</p>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-heading">
+                <span>Units in stock</span>
+                <span class="stat-icon blue">▦</span>
+              </div>
+              <strong class="stat-value" id="totalUnits">0</strong>
+              <p class="stat-note">Across all listed products</p>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-heading">
+                <span>Low stock</span>
+                <span class="stat-icon amber">!</span>
+              </div>
+              <strong class="stat-value" id="lowStockCount">0</strong>
+              <p class="stat-note">Products needing attention</p>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-heading">
+                <span>Out of stock</span>
+                <span class="stat-icon red">×</span>
+              </div>
+              <strong class="stat-value" id="outOfStockCount">0</strong>
+              <p class="stat-note">Products with zero units</p>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h3>Inventory health</h3>
+                  <p class="muted">Stock status across all products</p>
+                </div>
+                <span class="subtle-tag">Live demo data</span>
+              </div>
+
+              <div class="health-list">
+                <div class="health-row">
+                  <span class="health-dot green-dot"></span>
+                  <span>In stock</span>
+                  <strong id="healthyCount">0</strong>
+                </div>
+                <div class="health-track">
+                  <div class="health-fill fill-green" id="healthyBar"></div>
+                </div>
+
+                <div class="health-row">
+                  <span class="health-dot amber-dot"></span>
+                  <span>Low stock</span>
+                  <strong id="healthLowCount">0</strong>
+                </div>
+                <div class="health-track">
+                  <div class="health-fill fill-amber" id="lowBar"></div>
+                </div>
+
+                <div class="health-row">
+                  <span class="health-dot red-dot"></span>
+                  <span>Out of stock</span>
+                  <strong id="healthOutCount">0</strong>
+                </div>
+                <div class="health-track">
+                  <div class="health-fill fill-red" id="outBar"></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h3>Attention required</h3>
+                  <p class="muted">Products at or below their minimum level</p>
+                </div>
+              </div>
+              <div id="attentionList" class="attention-list"></div>
+              <button class="text-button" id="viewInventoryButton">
+                View all inventory →
+              </button>
+            </article>
+          </div>
+
+          <article class="panel activity-panel">
+            <div class="panel-heading">
+              <div>
+                <h3>Product overview</h3>
+                <p class="muted">Recently listed products</p>
+              </div>
+              <button class="button button-secondary" id="dashboardViewAll">
+                View inventory
+              </button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>PRODUCT</th>
+                    <th>SKU</th>
+                    <th>LOCATION</th>
+                    <th>QUANTITY</th>
+                    <th>STATUS</th>
+            
+                  </tr>
+                </thead>
+                <tbody id="dashboardTable"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- Inventory page -->
+        <section class="page-section hidden" id="inventoryPage">
+          <div class="welcome-row">
+            <div>
+              <h2>Inventory management</h2>
+              <p class="muted">
+                Manage products, stock levels and storage locations.
+              </p>
+            </div>
+            <button class="button button-primary" id="addProductButton">
+              + Add product
+            </button>
+          </div>
+
+          <div class="inventory-toolbar">
+            <div class="search-box">
+              <span>⌕</span>
+              <input
+                type="search"
+                id="searchInput"
+                placeholder="Search product, SKU or location..."
+              >
+            </div>
+
+            <select id="categoryFilter" aria-label="Filter by category">
+              <option value="">All categories</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Packaging">Packaging</option>
+              <option value="Office Supplies">Office Supplies</option>
+              <option value="Safety">Safety</option>
+            </select>
+
+            <select id="statusFilter" aria-label="Filter by stock status">
+              <option value="">All stock statuses</option>
+              <option value="In stock">In stock</option>
+              <option value="Low stock">Low stock</option>
+              <option value="Out of stock">Out of stock</option>
+            </select>
+          </div>
+
+          <article class="panel inventory-panel">
+            <div class="panel-heading">
+              <div>
+                <h3>All products</h3>
+                <p class="muted" id="inventoryCount">0 products</p>
+              </div>
+              <span class="subtle-tag">Demo inventory</span>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>PRODUCT</th>
+                    <th>SKU</th>
+                    <th>CATEGORY</th>
+                    <th>LOCATION</th>
+                    <th>QUANTITY</th>
+                    <th>MIN. STOCK</th>
+                    <th>STATUS</th>
+                    <th>ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryTable"></tbody>
+              </table>
+            </div>
+          </article>
+          <p class="page-footnote">
+            StockFlow demo · Changes are stored in memory only.
+          </p>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Add-product modal -->
+  <div class="modal-backdrop hidden" id="productModal">
+    <section class="modal" role="dialog"
+      aria-modal="true" aria-labelledby="modalTitle">
+
+      <div class="modal-heading">
+        <div>
+          <h2 id="modalTitle">Add new product</h2>
+          <p class="muted">Enter the product's inventory details.</p>
+        </div>
+        <button class="icon-button" id="closeModalButton"
+          aria-label="Close dialog">×</button>
+      </div>
+
+      <form id="productForm">
+        <div class="form-grid">
+          <label>
+            Product name
+            <input name="name" required maxlength="80"
+              placeholder="e.g. Wireless Keyboard">
+          </label>
+
+          <label>
+            SKU
+            <input name="sku" required maxlength="30"
+              placeholder="e.g. ELEC-105">
+          </label>
+
+          <label>
+            Category
+            <select name="category" required>
+              <option value="">Select category</option>
+              <option>Electronics</option>
+              <option>Packaging</option>
+              <option>Office Supplies</option>
+              <option>Safety</option>
+            </select>
+          </label>
+
+          <label>
+            Storage location
+            <input name="location" required maxlength="30"
+              placeholder="e.g. A-01-02">
+          </label>
+
+          <label>
+            Quantity
+            <input name="quantity" type="number" min="0"
+              step="1" value="0" required>
+          </label>
+
+          <label>
+            Minimum stock
+            <input name="minStock" type="number" min="0"
+              step="1" value="10" required>
+          </label>
+        </div>
+
+        <p class="form-error" id="formError" role="alert"></p>
+
+        <div class="modal-actions">
+          <button type="button" class="button button-secondary"
+            id="cancelModalButton">Cancel</button>
+          <button type="submit" class="button button-primary">
+            Save product
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div class="toast hidden" id="toast" role="status"></div>
+</body>
+</html>
